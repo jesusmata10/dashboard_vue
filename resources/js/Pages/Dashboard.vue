@@ -1,23 +1,22 @@
 <script setup>
-//import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue'
+import PruebaAside from '@/Layouts/PruebaAside.vue'
 import { Head } from '@inertiajs/vue3';
 </script>
 
 <template>
     <Head title="Dashboard" />
 
-    <DashboardLayout>
+    <PruebaAside>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard1</h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="container">
+            <div class=" mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">You're logged in!</div>
+                    <div class="p-6 text-gray-900">You're logged in! qedfvbueqruoeqbfripbierv eriv ievr vkevpwieru vrwfvuow rtipwr tkm wvih wrt wpr twker vpiw brt8gw rg w rg24u5i94'gntijgnwe </div>
                 </div>
             </div>
         </div>
-    </DashboardLayout>
+    </PruebaAside>
 </template>

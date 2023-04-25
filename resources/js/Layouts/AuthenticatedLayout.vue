@@ -129,7 +129,6 @@ const showingNavigationDropdown = ref(false);
                     <slot />
                 </main>
             
-
         </div>
 
     </div>

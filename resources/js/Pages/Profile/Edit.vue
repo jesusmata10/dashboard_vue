@@ -4,7 +4,7 @@ import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import PruebaAside from '@/Layouts/PruebaAside.vue';
 
 defineProps({
     mustVerifyEmail: {
@@ -19,7 +19,7 @@ defineProps({
 <template>
     <Head title="Profile" />
 
-    <DashboardLayout>
+    <PruebaAside>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Perfil</h2>
         </template>
@@ -43,5 +43,5 @@ defineProps({
                 </div>
             </div>
         </div>
-    </DashboardLayout>
+    </PruebaAside>
 </template>
