@@ -43,4 +43,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $with = [
+        'persona',
+
+    ];
+
+    public function persona()
+    {
+        return $this->hasOne(Persona::class)->orderBy('cedula', 'ASC');
+    }
+
+
+
+    public static function editar($id)
+    {
+        $data = User::with(['roles', 'personas'])->id($id)->first();
+        return $data; //revisar consulta
+    }
 }

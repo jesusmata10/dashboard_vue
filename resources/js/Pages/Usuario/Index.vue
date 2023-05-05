@@ -1,105 +1,401 @@
 <script setup>
-//import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PruebaAside from '@/Layouts/PruebaAside.vue';
-import { Head } from '@inertiajs/vue3';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import { Head, useForm } from '@inertiajs/vue3';
+import DangerButton from '@/Components/DangerButton.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import WarningButton from '@/Components/WarningButton.vue';
+import SecundaryButton from '@/Components/SecondaryButton.vue';
+import SelectInput from '@/Components/SelectInput.vue';
+import Modal from '@/Components/Modal.vue';
+import { nextTick, ref } from 'vue';
+import Swal from 'sweetalert2';
+import VueTailwindPagination from '@ocrv/vue-tailwind-pagination';
+import VueDatePicker from '@vuepic/vue-datepicker';
 
+const nameInput = ref(null);
+const modal = ref(false);
+const title = ref('');
+const operation = ref(1);
+const id = ref('');
+const date = ref(new Date());
+
+const props = defineProps({
+  usuarios: { type: Object, default: () => {} },
+  roles: { type: Object, default: () => {} },
+
+});
+
+/*const format = (date) => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}*/
+
+const form = useForm({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+  primer_nombre: '',
+  segundo_nombre: '',
+  primer_apellido: '',
+  segundo_apellido: '',
+  cedula: '',
+  fecha: '',
+  lugarnac: '',
+  nacionalidad: '',
+  parentesco_id: '',
+  sexo: '',
+  celular: '',
+  estados_id: '',
+  ciudades_id: '',
+  municipios_id: '',
+  parroquias_id: '',
+  urbanizacion: '',
+  tzona: '',
+  nzona: '',
+  tcalle: '',
+  ncalle: '',
+  tvivienda: '',
+  nvivienda: '',
+  rol: '',
+});
+
+const formPage = useForm({});
+const onPageClick = (event) => {
+  formPage.get(route('usuarios.index', { page: event }));
+}
+
+const openModal = (op, name, email, usuarios, roles) => {
+  modal.value = true;
+  nextTick(() => nameInput.value.focus());
+  operation.value = op;
+  id.value = usuarios;
+  if (op == 1) {
+    title.value = 'Crear Usuario';
+  } else {
+    title.value = 'Editar Usuario';
+    form.name = name;
+    form.email = email;
+    form.primer_nombre = props.usuarios[0].persona.primer_nombre;
+    form.segundo_nombre = props.usuarios[0].persona.segundo_nombre;
+    form.primer_apellido = props.usuarios[0].persona.primer_apellido;
+    form.segundo_apellido = props.usuarios[0].persona.segundo_apellido;
+    form.cedula = props.usuarios[0].persona.cedula;
+    form.fecha = props.usuarios[0].persona.fecha;
+    form.sexo = props.usuarios[0].persona.sexo;
+    form.lugarnac = props.usuarios[0].persona.lugarnac;
+    form.nacionalidad = props.usuarios[0].persona.nacionalidad;
+    form.parentesco_id = props.usuarios[0].persona.parentesco_id;
+    form.rol = props.roles;
+    
+
+    //let user = props.usuarios.filter(u => u.id == 1)
+
+    //console.log(user)
+
+  }
+
+}
+
+const closeModal = () => {
+  modal.value = false;
+  form.reset();
+}
+
+const save = () => {
+  if (operation.value == 1) {
+    form.post(route('usuarios.store'), {
+      onSuccess: () => {
+        ok('Usuario Creado')
+      }
+    });
+  } else {
+    form.put(route('usuarios.update', id.value), {
+      onSuccess: () => {
+        ok('Usuario Actualizado')
+      }
+    });
+  }
+}
+
+const ok = (msj) => {
+  form.reset();
+  closeModal();
+  Swal.fire({ title: msj, icon: 'success' });
+}
+
+const deleteEmployee = (id, name) => {
+
+  const alerta = Swal.mixin({
+    buttonsStyling: true
+  });
+  alerta.fire({
+    title: 'Esta seguro de eliminar ' + name + ' ?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: '<i class="fa-solid fa-check"></i> Si¡, Eliminar',
+    cancelButtonText: '<i class="fa-solid fa-ban"></i> Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      form.delete(route('usuarios.destroy', id), {
+        onSuccess: () => {
+          ok('Usuario Eliminado')
+        }
+      });
+    }
+  })
+}
+
+console.log(props.usuarios[0].persona.primer_nombre)
 
 </script>
 
 <template>
   <Head title="Usuario" />
 
-  <PruebaAside>
+  <DashboardLayout>
     <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Usuarios</h2>
     </template>
-    <div class=" bg-white px-6 sm:py-20 md:py-4 lg:overflow-visible lg:px-0">
-      <div class="absolute inset-0 -z-10 overflow-hidden">
-        <svg
-          class="absolute left-[max(50%,25rem)] top-0 h-[64rem] w-[128rem] -translate-x-1/2 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]"
-          aria-hidden="true">
-          <defs>
-            <pattern id="e813992c-7d03-4cc4-a2bd-151760b470a0" width="200" height="200" x="50%" y="-1"
-              patternUnits="userSpaceOnUse">
-              <path d="M100 200V.5M.5 .5H200" fill="none" />
-            </pattern>
-          </defs>
-          <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
-            <path d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z"
-              stroke-width="0" />
-          </svg>
-          <rect width="100%" height="100%" stroke-width="0" fill="url(#e813992c-7d03-4cc4-a2bd-151760b470a0)" />
-        </svg>
-      </div>
-      <div
-        class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10">
-        <div
-          class="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
-          <div class="lg:pr-4">
-            <div class="lg:max-w-lg">
-              <p class="text-base font-semibold leading-7 text-indigo-600">Deploy faster</p>
-              <h1 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">A better workflow</h1>
-              <p class="mt-6 text-xl leading-8 text-gray-700">Aliquet nec orci mattis amet quisque ullamcorper neque, nibh
-                sem. At arcu, sit dui mi, nibh dui, diam eget aliquam. Quisque id at vitae feugiat egestas.</p>
-            </div>
+
+    {{ $props.usuarios.persona }}
+
+    <div class="py-12">
+      <div class="max-w-max mx-auto sm:px-6 lg:px-8">
+        <div class="p-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+
+          <div class="bg-white grid v-screen place-items-center overflow-x-auto">
+            <PrimaryButton @click="$event => openModal(1)" class="my-2">
+              <i class="fa-solid fa-plus-circle"> Nuevo Usuario</i>
+            </PrimaryButton>
           </div>
+
         </div>
 
-        <div
-          class="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
-          <div class="lg:pr-4">
-            <div class="max-w-xl text-base leading-7 text-gray-700 lg:max-w-lg">
-              <p>Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper sed amet
-                vitae sed turpis id. Id dolor praesent donec est. Odio penatibus risus viverra tellus varius sit neque
-                erat velit. Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus enim. Mattis mauris semper
-                sed amet vitae sed turpis id.</p>
-              <ul role="list" class="mt-8 space-y-8 text-gray-600">
-                <li class="flex gap-x-3">
-                  <svg class="mt-1 h-5 w-5 flex-none text-indigo-600" viewBox="0 0 20 20" fill="currentColor"
-                    aria-hidden="true">
-                    <path fill-rule="evenodd"
-                      d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-2.75a.75.75 0 001.5 0V9.66l1.95 2.1a.75.75 0 101.1-1.02l-3.25-3.5a.75.75 0 00-1.1 0l-3.25 3.5a.75.75 0 101.1 1.02l1.95-2.1v4.59z"
-                      clip-rule="evenodd" />
-                  </svg>
-                  <span><strong class="font-semibold text-gray-900">Push to deploy.</strong> Lorem ipsum, dolor sit amet
-                    consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate
-                    blanditiis ratione.</span>
-                </li>
-                <li class="flex gap-x-3">
-                  <svg class="mt-1 h-5 w-5 flex-none text-indigo-600" viewBox="0 0 20 20" fill="currentColor"
-                    aria-hidden="true">
-                    <path fill-rule="evenodd"
-                      d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
-                      clip-rule="evenodd" />
-                  </svg>
-                  <span><strong class="font-semibold text-gray-900">SSL certificates.</strong> Anim aute id magna aliqua
-                    ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.</span>
-                </li>
-                <li class="flex gap-x-3">
-                  <svg class="mt-1 h-5 w-5 flex-none text-indigo-600" viewBox="0 0 20 20" fill="currentColor"
-                    aria-hidden="true">
-                    <path
-                      d="M4.632 3.533A2 2 0 016.577 2h6.846a2 2 0 011.945 1.533l1.976 8.234A3.489 3.489 0 0016 11.5H4c-.476 0-.93.095-1.344.267l1.976-8.234z" />
-                    <path fill-rule="evenodd"
-                      d="M4 13a2 2 0 100 4h12a2 2 0 100-4H4zm11.24 2a.75.75 0 01.75-.75H16a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75V15zm-2.25-.75a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 00.75-.75V15a.75.75 0 00-.75-.75h-.01z"
-                      clip-rule="evenodd" />
-                  </svg>
-                  <span><strong class="font-semibold text-gray-900">Database backups.</strong> Ac tincidunt sapien
-                    vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.</span>
-                </li>
-              </ul>
-              <p class="mt-8">Et vitae blandit facilisi magna lacus commodo. Vitae sapien duis odio id et. Id blandit
-                molestie auctor fermentum dignissim. Lacus diam tincidunt ac cursus in vel. Mauris varius vulputate et
-                ultrices hac adipiscing egestas. Iaculis convallis ac tempor et ut. Ac lorem vel integer orci.</p>
-              <h2 class="mt-16 text-2xl font-bold tracking-tight text-gray-900">No server? No problem.</h2>
-              <p class="mt-6">Id orci tellus laoreet id ac. Dolor, aenean leo, ac etiam consequat in. Convallis arcu ipsum
-                urna nibh. Pharetra, euismod vitae interdum mauris enim, consequat vulputate nibh. Maecenas pellentesque
-                id sed tellus mauris, ultrices mauris. Tincidunt enim cursus ridiculus mi. Pellentesque nam sed nullam sed
-                diam turpis ipsum eu a sed convallis diam.</p>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th scope="col" class="px-6 py-3">
+                  #
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Nombre
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Email
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Status
+                </th>
+                <th scope="col" class="px-6 py-3">
+                  Acci&oacuten
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="emp, i in usuarios" :key="emp.id"
+                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {{ (i + 1) }}
+                </th>
+                <td class="px-6 py-4">
+                  {{ emp.name }}
+                </td>
+                <td class="px-6 py-4">
+                  {{ emp.email }}
+                </td>
+                <td class="px-6 py-4 w-">
+                  {{ emp.status }}
+                </td>
+                <td class="px-6 py-4">
+                  <WarningButton @click="$event => openModal(2, emp.name, emp.email, emp.id)">
+                    <i class="fa-solid fa-edit"></i>
+                  </WarningButton>
+                  <DangerButton @click="$event => deleteEmployee(emp.id, emp.name)">
+                    <i class="fa-solid fa-trash"></i>
+                  </DangerButton>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
+        </div>
+        <br>
+        <div class="relative overflow-x-auto ali shadow-md sm:rounded-lg">
+          <VueTailwindPagination :current="usuarios.currentPage" :total="usuarios.total" :per-page="usuarios.perPage"
+            @page-changed="$event => onPageClick($event)">
+          </VueTailwindPagination>
+        </div>
+
+
+        <Modal :show="modal" @close="closeModal">
+
+          <div class="isolate bg-white px-6 py-12 sm:py-32 lg:px-8">
+            <div class="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
+              aria-hidden="true">
+              <div
+                class="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
+                style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)">
+              </div>
+            </div>
+            <div class="mx-auto max-w-2xl text-center">
+              <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{{ title }}</h2>
+              <!--<p class="mt-2 text-lg leading-8 text-gray-600">Aute magna irure deserunt veniam aliqua magna enim
+                        voluptate.</p>-->
+            </div>
+            <div class="mx-auto mt-16 max-w-xl sm:mt-20">
+             
+              <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-3">
+                <div>
+                  <InputLabel for="primer_nombre" value="Primer Nombre:"></InputLabel>
+                  <TextInput id="primer_nombre" ref="nameInput" v-model="form.primer_nombre" type="text" class="mt-1"
+                    placeholder="Primer Nombre">
+                  </TextInput>
+                  <InputError :message="form.errors.primer_nombre" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="segundo_nombre" value="Segundo Nombre:"></InputLabel>
+                  <TextInput id="segundo_nombre" v-model="form.segundo_nombre" type="text" class="mt-1"
+                    placeholder="Segundo Nombre">
+                  </TextInput>
+                  <InputError :message="form.errors.segundo_nombre" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="primer_apellido" value="Primer Apellido:"></InputLabel>
+                  <TextInput id="primer_apellido" v-model="form.primer_apellido" type="text" class="mt-1"
+                    placeholder="Primer Apellido">
+                  </TextInput>
+                  <InputError :message="form.errors.primer_apellido" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="segundo_apellido" value="Segundo Apellido:"></InputLabel>
+                  <TextInput id="segundo_apellido" v-model="form.segundo_apellido" type="text" class="mt-1"
+                    placeholder="Segundo Apellido">
+                  </TextInput>
+                  <InputError :message="form.errors.segundo_apellido" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="cedula" value="Numero de Cedula:"></InputLabel>
+                  <TextInput id="cedula" v-model="form.cedula" type="text" class="mt-1" placeholder="Numero de Cedula">
+                  </TextInput>
+                  <InputError :message="form.errors.cedula" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="fecha" value="Fecha:"></InputLabel>
+                  <div class="mt-1">
+                    <VueDatePicker id="fecha" v-model="fecha" locale="es"></VueDatePicker>
+                    <InputError :message="form.errors.fecha" class="mt-2"></InputError>
+                  </div>
+                </div>
+                <div>
+                  <InputLabel for="sexo" value="Sexo:"></InputLabel>
+                  <TextInput id="sexo" v-model="form.sexo" type="text" class="mt-1" placeholder="Sexo">
+                  </TextInput>
+                  <InputError :message="form.errors.sexo" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="lugarnac" value="Lugar de Nacimiento:"></InputLabel>
+                  <TextInput id="lugarnac" v-model="form.lugarnac" type="text" class="mt-1"
+                    placeholder="Lugar de Nacimiento">
+                  </TextInput>
+                  <InputError :message="form.errors.lugarnac" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="nacionalidad" value="Nacionalidad:"></InputLabel>
+                  <TextInput id="nacionalidad" v-model="form.nacionalidad" type="text" class="mt-1"
+                    placeholder="Nacionalidad">
+                  </TextInput>
+                  <InputError :message="form.errors.nacionalidad" class="mt-2"></InputError>
+                </div>
+                
+                <div>
+                  <InputLabel for="parentesco_id" value="Parentesco:"></InputLabel>
+                  <TextInput id="parentesco_id" v-model="form.parentesco_id" type="text" class="mt-1" placeholder="Parentesco">
+                  </TextInput>
+                  <InputError :message="form.errors.parentesco" class="mt-2"></InputError>
+                </div>
+                <!--<div class="">
+                  <InputLabel for="estados_id" value="Estado:"></InputLabel>
+                  <SelectInput id="estados_id" :options="Estado" v-model="form.estados_id" type="text"
+                    class="mt-1 block w-3/4" placeholder="Estado"></SelectInput>
+                  <InputError :message="form.errors.estados_id" class="mt-2"></InputError>
+                </div>-->
+                <div class="sm:col-span-3">
+                  <InputLabel for="coments" value="Observacion:"></InputLabel>
+                  <div class="mt-2.5">
+                    <textarea name="message" id="message" rows="4"
+                      class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <br>
+              <hr>
+              <br>
+
+              <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-3">
+                <div>
+                  <InputLabel for="name" value="Nombre:"></InputLabel>
+                  <TextInput id="name" v-model="form.name" type="text" class="mt-1"
+                    placeholder="Name">
+                  </TextInput>
+                  <InputError :message="form.errors.nacionalidad" class="mt-2"></InputError>
+                </div>
+                <div class="sm:col-span-2">
+                  <InputLabel for="email" value="Email:"></InputLabel>
+                  <TextInput id="email" v-model="form.email" type="emails" class="mt-1" placeholder="Email">
+                  </TextInput>
+                  <InputError :message="form.errors.nacionalidad" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="password" value="Password"></InputLabel>
+                  <TextInput id="password" v-model="form.password" type="" class="mt-1" placeholder="Password"></TextInput>
+                  <InputError :message="form.errors.password" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="password_confirmation" value="Confirmar Password"></InputLabel>
+                  <TextInput id="password_confirmation" v-model="form.password_confirmation" type="" class="mt-1" placeholder="Confirmar Password"></TextInput>
+                  <InputError :message="form.errors.password_confirmation" class="mt-2"></InputError>
+                </div>
+                <div>
+                  <InputLabel for="rol" value="Rol"></InputLabel>
+                  <SelectInput id="rol" :options="roles" v-model="form.rol" class="mt-1 block w-3/4" type="text" placeholder="Rol"></SelectInput>
+                  
+                </div>
+              </div>
+              <div class="mt-10">
+                <button type="submit"
+                  class="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Let's
+                  talk</button>
+              </div>
             </div>
           </div>
-        </div>
+
+
+
+          <div class="flex">
+            <div class="p-3 mt-6 flex">
+              <PrimaryButton class="p-3 flex mt-2" :disabled="form.processing" @click="save">
+                <i class="fa-solid fa-save"> Guardar</i>
+              </PrimaryButton>
+            </div>
+            <div class="p-3 mt-6 flex justify-end">
+              <SecundaryButton class="ml-3" :disabled="form.processing" @click="closeModal">
+                Cancelar
+              </SecundaryButton>
+            </div>
+          </div>
+        </Modal>
       </div>
+
     </div>
-  </PruebaAside>
+  </DashboardLayout>
 </template>

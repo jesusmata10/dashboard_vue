@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        
+
         $user = User::create([
             'name' => 'Demo',
             'email' => 'demo@demo.com',
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
             'status' => true
         ]);
 
-        Persona::create([
+        $persona = Persona::create([
             'cedula' => 17719631,
             'rif' => 177196319,
             'primer_nombre' => 'Jesus',
@@ -33,33 +33,34 @@ class UserSeeder extends Seeder
             'primer_apellido' => 'Mata',
             'segundo_apellido' => 'Garcia',
             'fecha' => '1985/11/19',
-            'telefono' =>'04242314794',
+            'telefono' => '04242314794',
             'celular' => '04122069357',
             'email' => $user->email,
             'lugarnac' => 'Caracas',
             'nacionalidad' => 'Venezuela',
             'sexo' => 'Hombre',
             'status' => true,
-            'user_id' => 1,
-            'user_create' => 1,
+            'user_id' => $user->id,
+            'user_create' => $user->id,
             'parentesco_id' => 1,
-            
+            'personas_id' => 1,
+
         ]);
 
         Direccion::create([
-        'personas_id' => $user->id,
-        'estados_id' => 14,
-        'municipios_id' => 233,
-        'ciudades_id'=> 292,
-        'parroquias_id' => 631,
-        'urbanizacion' => 'Mopia',
-        'zonas_id' => 1,
-        'name_zona' => 'Sector',
-        'areas_id' => 1,
-        'name_area' => 'Vereda',
-        'hogares_id' => 1,
-        'name_hogar' => 'Casa',
-        'status' => true,
+            'personas_id' => $persona->id,
+            'estados_id' => 14,
+            'municipios_id' => 233,
+            'ciudades_id' => 292,
+            'parroquias_id' => 631,
+            'urbanizacion' => 'Mopia',
+            'zonas_id' => 1,
+            'name_zona' => 'Sector',
+            'areas_id' => 1,
+            'name_area' => 'Vereda',
+            'hogares_id' => 1,
+            'name_hogar' => 'Casa',
+            'status' => true,
         ]);
 
 

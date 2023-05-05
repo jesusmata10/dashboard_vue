@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\User;
+use App\Http\Requests\User\UserRequest;
+use PhpParser\Node\Stmt\TryCatch;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -12,7 +16,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Usuario/Index');
+        $usuarios = User::all();
+        $roles = Role::select('id', 'name')->orderBy('name')->get();
+        //dd($roles);
+        return Inertia::render('Usuario/Index', [
+            'usuarios' => $usuarios,
+            'roles' => $roles,
+        ]);
     }
 
     /**
@@ -26,9 +36,17 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+
+        try {
+            $user = new User($request->all());
+            $user->save();
+
+            return redirect('usuarios')->with('msj', 'Usuario creado sastifactoriamente');
+        } catch (\Throwable $th) {
+            return redirect('usuarios')->with('error', '¡Ha ocurrido un error!');
+        }
     }
 
     /**

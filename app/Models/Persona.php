@@ -14,6 +14,7 @@ class Persona extends Model
     protected $fillable = [
         'cedula',
         'rif',
+        'personas_id',
         'primer_nombre',
         'segundo_nombre',
         'primer_apellido',
@@ -31,4 +32,14 @@ class Persona extends Model
         'parentesco_id',
         'vocero_id'
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    public function direccion()
+    {
+        return $this->hasOne(Direccion::class);
+    }
 }

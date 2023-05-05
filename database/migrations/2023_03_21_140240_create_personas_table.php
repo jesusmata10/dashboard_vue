@@ -28,6 +28,7 @@ return new class extends Migration
             $table->text('sexo');
             $table->boolean('status')->default(true);
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('personas_id')->nullable();
             $table->unsignedBigInteger('user_create')->nullable();
             $table->unsignedBigInteger('parentesco_id');
             $table->string('vocero_id')->nullable();
