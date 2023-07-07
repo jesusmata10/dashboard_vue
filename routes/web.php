@@ -35,6 +35,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/usuario', UserController::class)->names('usuarios');
+    Route::post('/municipioAjaxUser', [DireccionController::class, 'municipioAjaxUser' ]);
+    Route::post('/parroquiaAjaxUser', [DireccionController::class,'parroquiaAjaxUser']);
+    Route::post('/ciudadAjaxUser', [DireccionController::class, 'ciudadAjaxUser']);
 });
 
 require __DIR__.'/auth.php';

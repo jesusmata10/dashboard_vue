@@ -38,6 +38,11 @@ class Persona extends Model
         'updated_at',
     ];
 
+    protected $with = [
+        'direccion',
+
+    ];
+
     public function direccion()
     {
         return $this->hasOne(Direccion::class);

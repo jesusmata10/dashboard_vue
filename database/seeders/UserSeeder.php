@@ -43,12 +43,11 @@ class UserSeeder extends Seeder
             'user_id' => $user->id,
             'user_create' => $user->id,
             'parentesco_id' => 1,
-            'personas_id' => 1,
 
         ]);
 
         Direccion::create([
-            'personas_id' => $persona->id,
+            'persona_id' => $persona->id,
             'estados_id' => 14,
             'municipios_id' => 233,
             'ciudades_id' => 292,

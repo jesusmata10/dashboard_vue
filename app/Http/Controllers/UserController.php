@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
+use App\Models\Parentesco;
+use App\Models\Estado;
+use App\Models\Persona;
 use App\Http\Requests\User\UserRequest;
-use PhpParser\Node\Stmt\TryCatch;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -17,11 +19,17 @@ class UserController extends Controller
     public function index()
     {
         $usuarios = User::all();
+        //$personas = Persona::all();
+        $parentesco = Parentesco::all();
+        $estados = Estado::all();
         $roles = Role::select('id', 'name')->orderBy('name')->get();
-        //dd($roles);
+        //dd($usuarios);
+
         return Inertia::render('Usuario/Index', [
             'usuarios' => $usuarios,
             'roles' => $roles,
+            'parentesco' => $parentesco,
+            'estados' => $estados,
         ]);
     }
 
@@ -38,7 +46,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-
+        dd($request);
         try {
             $user = new User($request->all());
             $user->save();
